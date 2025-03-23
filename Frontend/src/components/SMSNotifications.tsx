@@ -24,7 +24,7 @@ export const SMSNotifications: React.FC<SMSNotificationsProps> = ({ onClose }) =
       console.log('Message:', message);
 
       const response = await axios.post(
-        'https://api.twilio.com/2010-04-01/Accounts/AC42dd071321a325f4b14effb50a1ead6a/Messages.json',
+        'https://api.twilio.com/2010-04-01/Accounts/AC42dd071321a325f4b14effb0a1ead6a/Messages.json',
         new URLSearchParams({
           To: to,
           From: '+15013866602',
@@ -35,7 +35,7 @@ export const SMSNotifications: React.FC<SMSNotificationsProps> = ({ onClose }) =
             'Content-Type': 'application/x-www-form-urlencoded'
           },
           auth: {
-            username: 'AC42dd071321a325f4b14effb50aead6a',
+            username: 'AC42dd071321a325f4b14effb50aad6a',
             password: 'f1cf82c8b173b8864cba63552bdec25'
           }
         }
