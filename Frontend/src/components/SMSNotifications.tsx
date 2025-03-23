@@ -18,36 +18,36 @@ export const SMSNotifications: React.FC<SMSNotificationsProps> = ({ onClose }) =
     return phoneRegex.test(number);
   };
 
-  // const sendSMS = async (to: string, message: string) => {
-  //   try {
-  //     console.log('Attempting to send SMS to:', to);
-  //     console.log('Message:', message);
+  const sendSMS = async (to: string, message: string) => {
+    try {
+      console.log('Attempting to send SMS to:', to);
+      console.log('Message:', message);
 
-  //     const response = await axios.post(
-  //       'https://api.twilio.com/2010-04-01/Accounts/AC42dd071321a325f4b14effb50a1ead6a/Messages.json',
-  //       new URLSearchParams({
-  //         To: to,
-  //         From: '+15013866602',
-  //         Body: message
-  //       }).toString(),
-  //       {
-  //         headers: {
-  //           'Content-Type': 'application/x-www-form-urlencoded'
-  //         },
-  //         auth: {
-  //           username: 'AC42dd071321a325f4b14effb50a1ead6a',
-  //           password: 'f1cf82c8b173b8864cba635a52bdec25'
-  //         }
-  //       }
-  //     );
+      const response = await axios.post(
+        'https://api.twilio.com/2010-04-01/Accounts/AC42dd071321a325f4b14effb50a1ead6a/Messages.json',
+        new URLSearchParams({
+          To: to,
+          From: '+15013866602',
+          Body: message
+        }).toString(),
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          auth: {
+            username: 'AC42dd071321a325f4b14effb50aead6a',
+            password: 'f1cf82c8b173b8864cba63552bdec25'
+          }
+        }
+      );
       
-  //     console.log('SMS Response:', response.data);
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error('SMS Error:', error.response?.data || error.message);
-  //     throw error;
-  //   }
-  // };
+      console.log('SMS Response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('SMS Error:', error.response?.data || error.message);
+      throw error;
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
