@@ -1,0 +1,265 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.bg-farm-pattern {
+  background: linear-gradient(
+      120deg,
+      rgba(167, 243, 208, 0.1) 0%,
+      rgba(110, 231, 183, 0.1) 50%,
+      rgba(167, 243, 208, 0.1) 100%
+    ),
+    linear-gradient(rgba(20, 83, 45, 0.05) 0%, rgba(22, 101, 52, 0.1) 100%),
+    linear-gradient(
+      to bottom right,
+      #f0fdf4 0%,
+      #dcfce7 25%,
+      #bbf7d0 50%,
+      #86efac 100%
+    );
+  background-size: 200% 200%, 100% 100%, 100% 100%;
+  animation: gradientFlow 15s ease infinite;
+}
+
+.glass-card {
+  @apply bg-white/95 backdrop-blur-md border border-green-100/50 shadow-lg;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+@layer base {
+  body {
+    @apply bg-gradient-to-b from-green-900 to-green-800;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/10 backdrop-blur-lg border border-white/20;
+  }
+
+  .glass-button {
+    @apply bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white transition-all duration-300;
+  }
+
+  .input-field {
+    @apply bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-white/40 focus:ring-white/20;
+  }
+}
+
+.animate-water-fill {
+  animation: water-fill 2s ease-in-out infinite;
+}
+
+@keyframes water-fill {
+  0%,
+  100% {
+    transform: translateX(-10%);
+  }
+  50% {
+    transform: translateX(10%);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-drive {
+  animation: drive 20s linear infinite;
+}
+
+@keyframes drive {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes drive {
+  from {
+    transform: translateX(-20px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes water-fill {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.5s ease-out forwards;
+}
+
+.animate-float {
+  animation: float 2s ease-in-out infinite;
+}
+
+.animate-drive {
+  animation: drive 1s ease-out forwards;
+}
+
+.animate-water-fill {
+  animation: water-fill 1s ease-out forwards;
+}
+
+/* Add smooth scrolling to the entire page */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Improve form input appearance on mobile */
+input,
+select,
+textarea {
+  -webkit-appearance: none;
+  appearance: none;
+  @apply shadow-sm;
+}
+
+/* Better tap targets on mobile */
+button,
+a {
+  @apply cursor-pointer;
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* index.css */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  /* Remove overflow: hidden to allow scrolling */
+}
+
+/* Hide scrollbar for Chrome, Safari, and Edge */
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE and Edge */
+body {
+  -ms-overflow-style: none;
+}
+
+/* Hide scrollbar for Firefox */
+body {
+  scrollbar-width: none;
+}
+
+/* Optionally apply to all elements (if needed) */
+*::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
