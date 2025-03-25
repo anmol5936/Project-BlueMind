@@ -3,6 +3,9 @@ voice_assistant/test_assistant.ipynb
 __pycache__
 
 .env
+.venv
+venv
+
 
 test.ipynb
 

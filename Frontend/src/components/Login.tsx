@@ -125,11 +125,15 @@ export const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[url('https://res.cloudinary.com/dzxgf75bh/image/upload/v1742636445/e1ec543c-9f57-472c-85b6-aceb6980328b_hedmex.jpg')] bg-cover bg-center bg-no-repeat flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
-        <h1 className="text-2xl font-bold text-center text-gray-800 mb-8">
-          Welcome Back
-        </h1>
+    <div className="min-h-screen bg-gradient-to-b from-blue-600 to-blue-900 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8 animate-fade-in">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold mb-2">
+            <span className="text-blue-600">blue</span>
+            <span className="text-blue-400">mind</span>
+          </h1>
+          <p className="text-gray-600">Sign in to your account</p>
+        </div>
 
         <div className="flex justify-center space-x-4 mb-8">
           <button
@@ -141,7 +145,7 @@ export const Login = () => {
             }}
             className={`flex items-center px-4 py-2 rounded-lg transition-all ${
               loginMethod === "password"
-                ? "bg-green-500 text-white shadow-md scale-105"
+                ? "bg-blue-500 text-white shadow-md scale-105"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
@@ -157,7 +161,7 @@ export const Login = () => {
             }}
             className={`flex items-center px-4 py-2 rounded-lg transition-all ${
               loginMethod === "otp"
-                ? "bg-green-500 text-white shadow-md scale-105"
+                ? "bg-blue-500 text-white shadow-md scale-105"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
@@ -176,41 +180,35 @@ export const Login = () => {
           {loginMethod === "password" ? (
             <>
               <div>
-                <label
-                  htmlFor="username"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
+                <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
                   Username
                 </label>
                 <input
                   type="text"
-                  name="username"
                   id="username"
-                  required
+                  name="username"
                   value={formData.username}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-900 focus:border-green-500 focus:ring-green-500 transition-colors"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                   placeholder="Enter your username"
+                  required
                 />
               </div>
 
               <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                   Password
                 </label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
-                    name="password"
                     id="password"
-                    required
+                    name="password"
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-900 focus:border-green-500 focus:ring-green-500 transition-colors"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                     placeholder="Enter your password"
+                    required
                   />
                   <button
                     type="button"
@@ -229,26 +227,23 @@ export const Login = () => {
           ) : (
             <>
               <div>
-                <label
-                  htmlFor="phone"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
                   Phone Number
                 </label>
                 <div className="flex">
-                  <span className="inline-flex items-center px-4 border-2 border-r-0 border-gray-200 rounded-l-xl bg-gray-50 text-gray-500">
+                  <span className="inline-flex items-center px-4 border border-r-0 border-gray-300 rounded-l-lg bg-gray-50 text-gray-500">
                     +91
                   </span>
                   <input
                     type="tel"
-                    name="phone"
                     id="phone"
-                    required
+                    name="phone"
                     pattern="[0-9]{10}"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-r-xl text-gray-900 focus:border-green-500 focus:ring-green-500 transition-colors"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                     placeholder="Enter phone number"
+                    required
                     disabled={otpSent}
                   />
                 </div>
@@ -259,7 +254,7 @@ export const Login = () => {
                   type="button"
                   onClick={handleSendOTP}
                   disabled={otpSending || !formData.phone}
-                  className="w-full flex items-center justify-center px-4 py-3 rounded-xl text-white bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="w-full flex items-center justify-center px-4 py-2 rounded-lg text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {otpSending ? (
                     <>
@@ -272,23 +267,20 @@ export const Login = () => {
                 </button>
               ) : (
                 <div>
-                  <label
-                    htmlFor="otp"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
+                  <label htmlFor="otp" className="block text-sm font-medium text-gray-700 mb-1">
                     Enter OTP
                   </label>
                   <input
                     type="text"
-                    name="otp"
                     id="otp"
-                    required
+                    name="otp"
                     pattern="[0-9]{6}"
                     maxLength={6}
                     value={formData.otp}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-900 focus:border-green-500 focus:ring-green-500 transition-colors"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                     placeholder="Enter 6-digit OTP"
+                    required
                   />
                 </div>
               )}
@@ -298,7 +290,7 @@ export const Login = () => {
           <button
             type="submit"
             disabled={isLoading || (loginMethod === "otp" && !otpSent)}
-            className="w-full flex items-center justify-center px-6 py-3 rounded-xl text-white bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full flex items-center justify-center px-4 py-2 rounded-lg text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isLoading ? (
               <>
@@ -309,19 +301,21 @@ export const Login = () => {
               "Sign in"
             )}
           </button>
-
-          <p className="text-center text-sm text-gray-600">
-            Don't have an account?{" "}
-            <button
-              type="button"
-              className="font-medium text-green-600 hover:text-green-500"
-              onClick={() => navigate("/register")}
-            >
-              Register here
-            </button>
-          </p>
         </form>
+
+        <p className="text-center mt-6 text-sm text-gray-600">
+          Don't have an account?{' '}
+          <button
+            type="button"
+            className="font-medium text-blue-600 hover:text-blue-700"
+            onClick={() => navigate('/register')}
+          >
+            Register here
+          </button>
+        </p>
       </div>
     </div>
   );
 };
+
+
