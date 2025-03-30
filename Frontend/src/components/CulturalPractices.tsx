@@ -259,48 +259,159 @@ export const CulturalPractices = () => {
     },
   ];
 
-  const handleVoiceInput = () => {
-    setIsRecording(!isRecording);
-    setTimeout(() => {
-      if (isRecording) {
-        setPracticeInput(
-          "Sample recorded practice: We use traditional well management combined with modern sensors."
-        );
+  const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
+
+  useEffect(() => {
+    // Check if Web Speech API is available
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      const speechRecognition = new SpeechRecognition();
+      speechRecognition.continuous = false;
+      speechRecognition.interimResults = false;
+      speechRecognition.lang = 'en-US';
+
+      speechRecognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        setPracticeInput(transcript);
+        setIsRecording(false);
+        toast.success("Recording completed!");
+      };
+
+      speechRecognition.onerror = (event) => {
+        console.error("Speech recognition error:", event.error);
+        setIsRecording(false);
+        toast.error(`Recording failed: ${event.error}`);
+      };
+
+      speechRecognition.onend = () => {
+        setIsRecording(false);
+      };
+
+      setRecognition(speechRecognition);
+    } else {
+      console.warn("Speech Recognition API not supported in this browser");
+    }
+
+    // Cleanup
+    return () => {
+      if (recognition) {
+        recognition.stop();
       }
-    }, 2000);
-  };
+    };
+  }, []);
+
+ // Replace only the handleVoiceInput function
+const handleVoiceInput = () => {
+  if (!recognition) {
+    toast.error("Voice recording is not supported in your browser");
+    return;
+  }
+
+  if (isRecording) {
+    recognition.stop();
+    setIsRecording(false);
+  } else {
+    setPracticeInput(""); // Clear previous input
+    setIsRecording(true);
+    recognition.start();
+    // Removed: toast.loading("Recording... Speak now!");
+  }
+};
   const userLocation = JSON.parse(localStorage.getItem("userLocation") || "{}");
   const userRegion = userLocation.region;
   const handlePracticeSubmit = async () => {
-    const transcriptData = {
-      transcript: practiceInput,
-    };
-
     const loadingToast = toast.loading("Submitting practice...");
-
+    
+    console.log("Starting practice submission with input:", practiceInput);
+    
     try {
-      const response = await fetch(
-        "http://localhost:7000/predict_festival_practice",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(transcriptData),
-        }
-      );
-
+      // Configure Gemini API request
+      const geminiApiKey = "AIzaSyCDo8BVGlqjULGyafLfSwhs4fOzjpR2FfQ";
+      const geminiEndpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+      
+      console.log("Making request to Gemini API endpoint:", geminiEndpoint);
+      
+      const response = await fetch(geminiEndpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": geminiApiKey,
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: `Given the transcript "${practiceInput}", predict the festival and associated practice. Return the response in JSON format with keys "predicted_festival" and "predicted_practice". For example:
+              {
+                "predicted_festival": "Holi",
+                "predicted_practice": "Playing with colored water"
+              }`
+            }]
+          }]
+        })
+      });
+      
+      console.log("Gemini API response status:", response.status);
+      
       if (!response.ok) {
-        throw new Error("API request failed");
+        throw new Error(`Gemini API request failed: ${response.status}`);
       }
+      
+      const geminiData = await response.json();
+      console.log("Raw Gemini API response:", geminiData);
+      
+      // Check if the response has the expected structure
+      if (!geminiData.candidates || !geminiData.candidates[0] || !geminiData.candidates[0].content || !geminiData.candidates[0].content.parts) {
+        console.error("Unexpected API response structure:", geminiData);
+        throw new Error("Unexpected response structure from Gemini API");
+      }
+      
+    // Extract the generated text from Gemini response and parse it as JSON
+const generatedText = geminiData.candidates[0].content.parts[0].text;
+console.log("Extracted text from Gemini response:", generatedText);
 
-      const data = await response.json();
+// Clean the response by removing markdown code block syntax
+let cleanedText = generatedText;
+// Remove markdown code block formatting if present
+if (cleanedText.includes("```")) {
+  // Extract just the JSON part between the code block markers
+  const jsonMatch = cleanedText.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (jsonMatch && jsonMatch[1]) {
+    cleanedText = jsonMatch[1];
+  }
+}
+console.log("Cleaned text for parsing:", cleanedText);
 
+// Handle potential JSON parsing errors
+let data;
+try {
+  data = JSON.parse(cleanedText);
+  console.log("Successfully parsed JSON:", data);
+} catch (parseError) {
+  console.error("JSON parsing error:", parseError);
+  console.log("Text that failed to parse:", cleanedText);
+  throw new Error("Failed to parse JSON response from Gemini");
+}
+      
+      // Validate that required fields exist
+      if (!data.predicted_festival || !data.predicted_practice) {
+        console.error("Missing required fields in parsed data:", data);
+        throw new Error("Missing required fields in Gemini response");
+      }
+      
+      console.log("Submitting to community endpoint with data:", {
+        festival: data.predicted_festival,
+        practice: data.predicted_practice,
+        region: userLocation.region,
+      });
+      
+      // Submit to community endpoint
       await axios.post("http://localhost:3000/community", {
         festival: data.predicted_festival,
         practice: data.predicted_practice,
         region: userLocation.region,
       });
+      
+      console.log("Community submission successful");
       setTriggerFetch((prev) => prev + 1);
       setPracticeInput("");
       toast.success("Practice submitted successfully!", {
@@ -308,7 +419,7 @@ export const CulturalPractices = () => {
       });
     } catch (error) {
       console.error("Error submitting practice:", error);
-      toast.error("Failed to submit practice. Please try again.", {
+      toast.error(`Failed to submit practice: ${error.message}`, {
         id: loadingToast,
       });
     }
