@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import { createServer } from "http";
 import { WebSocketServer } from "ws";
 import { authRoute } from "./routes/authRoutes.js";
+import { communityRoute } from "./routes/communityRoute.js";
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api", authRoute);
+app.use("/", communityRoute);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

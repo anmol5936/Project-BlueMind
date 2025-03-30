@@ -22,6 +22,8 @@ import {
   Loader2,
 } from "lucide-react";
 import axios from "axios";
+import { CulturalPracticesData } from "./CulturalData";
+import { toast } from "react-hot-toast";
 
 interface Practice {
   id: string;
@@ -61,7 +63,7 @@ export const CulturalPractices = () => {
   } | null>(null);
   const [isMapLoading, setIsMapLoading] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
-
+  const [triggerFetch, setTriggerFetch] = useState(0);
   // Define the state with proper typing
   const [practices, setPractices] = useState<{
     improved_efficiency: string[];
@@ -72,12 +74,10 @@ export const CulturalPractices = () => {
     traditional_practice: string[];
   } | null>(null);
 
-  // Fetch data in useEffect
   useEffect(() => {
     axios
       .get("http://localhost:7000/water_analysis")
       .then((res) => {
-        console.log(res.data);
         setPractices(res.data);
       })
       .catch((e) => {
@@ -85,7 +85,6 @@ export const CulturalPractices = () => {
       });
   }, []);
 
-  // Function to parse percentage range to a number
   const parsePercentageRange = (range: string): number => {
     const [min, max] = range
       .split("-")
@@ -260,20 +259,6 @@ export const CulturalPractices = () => {
     },
   ];
 
-  const [data, setData] = useState();
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:7000/water_analysis")
-      .then((res) => {
-        console.log(res.data);
-        setData(res.data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }, []);
-
   const handleVoiceInput = () => {
     setIsRecording(!isRecording);
     setTimeout(() => {
@@ -284,15 +269,52 @@ export const CulturalPractices = () => {
       }
     }, 2000);
   };
+  const userLocation = JSON.parse(localStorage.getItem("userLocation") || "{}");
+  const userRegion = userLocation.region;
+  const handlePracticeSubmit = async () => {
+    const transcriptData = {
+      transcript: practiceInput,
+    };
 
-  const handlePracticeSubmit = () => {
-    if (practiceInput.trim()) {
+    const loadingToast = toast.loading("Submitting practice...");
+
+    try {
+      const response = await fetch(
+        "http://localhost:7000/predict_festival_practice",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(transcriptData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("API request failed");
+      }
+
+      const data = await response.json();
+
+      await axios.post("http://localhost:3000/community", {
+        festival: data.predicted_festival,
+        practice: data.predicted_practice,
+        region: userLocation.region,
+      });
+      setTriggerFetch((prev) => prev + 1);
       setPracticeInput("");
-      alert("Thank you! Your practice has been saved.");
+      toast.success("Practice submitted successfully!", {
+        id: loadingToast,
+      });
+    } catch (error) {
+      console.error("Error submitting practice:", error);
+      toast.error("Failed to submit practice. Please try again.", {
+        id: loadingToast,
+      });
     }
   };
 
-  const GEOAPIFY_API_KEY = "ffa713d8e6014edfb0c010263eebc97e"; // Replace with your Geoapify API key
+  const GEOAPIFY_API_KEY = "ffa713d8e6014edfb0c010263eebc97e";
 
   const handleMapClick = async () => {
     setIsMapModalOpen(true);
@@ -302,7 +324,6 @@ export const CulturalPractices = () => {
     setCoordinates(null);
 
     try {
-      // Fetch user location using ipapi.co
       const response = await fetch("https://ipapi.co/json/");
       if (!response.ok) {
         throw new Error("Failed to fetch location: HTTP " + response.status);
@@ -316,11 +337,8 @@ export const CulturalPractices = () => {
       const lon = data.longitude;
       setCoordinates({ lat: lat.toString(), lon: lon.toString() });
 
-      // Construct Geoapify Static Maps API URL
       const mapUrl = `https://maps.geoapify.com/v1/staticmap?style=osm-carto&width=600&height=300&center=lonlat:${lon},${lat}&zoom=10&apiKey=${GEOAPIFY_API_KEY}`;
-      console.log("Geoapify Map URL:", mapUrl); // Debug log
 
-      // Optional: Verify the URL works by fetching it first
       const mapResponse = await fetch(mapUrl);
       if (!mapResponse.ok) {
         const errorText = await mapResponse.text();
@@ -561,6 +579,10 @@ export const CulturalPractices = () => {
             </div>
           </div>
         </div>
+        <CulturalPracticesData
+          region={userRegion}
+          triggerFetch={triggerFetch}
+        />
 
         {/* Quick Actions Footer */}
         <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
