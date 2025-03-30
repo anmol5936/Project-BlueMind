@@ -17,10 +17,13 @@ import {
   Square,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 // Cloudinary configuration
-const CLOUDINARY_UPLOAD_PRESET = "Project-Kenko";
-const CLOUDINARY_CLOUD_NAME = "dzxgf75bh";
+const CLOUDINARY_UPLOAD_PRESET = process.env.CLOUDINARY_UPLOAD_PRESET;
+const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 
 // Weather data
 const weatherData = {

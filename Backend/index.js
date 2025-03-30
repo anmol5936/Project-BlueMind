@@ -17,11 +17,9 @@ app.use(
 );
 
 app.use(express.json());
-
+const MONGO_URL = process.env.MONGO_URL;
 try {
-  await mongoose.connect(
-    "mongodb+srv://nayakswadhin25:swadhin123@cluster0.qitrt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-  );
+  await mongoose.connect(MONGO_URL);
   console.log("Mongodb connected sucessfully!!");
 } catch (error) {
   console.log("error in connecting to the database!!");
