@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
-import { Phone, X, Check, Bell, AlertCircle } from 'lucide-react';
-import axios from 'axios';
+import React, { useState } from "react";
+import { Phone, X, Check, Bell, AlertCircle } from "lucide-react";
+import axios from "axios";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 interface SMSNotificationsProps {
   onClose: () => void;
 }
+const TWILLO_USERNAME = process.env.TWILLO_USERNAME;
+const TWILLO_PASSWORD = process.env.TWILLO_PASSWORD;
 
-export const SMSNotifications: React.FC<SMSNotificationsProps> = ({ onClose }) => {
-  const [phoneNumber, setPhoneNumber] = useState('');
+export const SMSNotifications: React.FC<SMSNotificationsProps> = ({
+  onClose,
+}) => {
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [notifications, setNotifications] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -20,50 +27,50 @@ export const SMSNotifications: React.FC<SMSNotificationsProps> = ({ onClose }) =
 
   const sendSMS = async (to: string, message: string) => {
     try {
-      console.log('Attempting to send SMS to:', to);
-      console.log('Message:', message);
+      console.log("Attempting to send SMS to:", to);
+      console.log("Message:", message);
 
       const response = await axios.post(
-        'https://api.twilio.com/2010-04-01/Accounts/AC42dd071321a325f4b14effb0a1ead6a/Messages.json',
+        `https://api.twilio.com/2010-04-01/Accounts/${TWILLO_USERNAME}/Messages.json`,
         new URLSearchParams({
           To: to,
-          From: '+15013866602',
-          Body: message
+          From: "+15013866602",
+          Body: message,
         }).toString(),
         {
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            "Content-Type": "application/x-www-form-urlencoded",
           },
           auth: {
-            username: 'AC42dd071321a325f4b14effb50aad6a',
-            password: 'f1cf82c8b173b8864cba63552bdec25'
-          }
+            username: `${TWILLO_USERNAME}`,
+            password: `${TWILLO_PASSWORD}`,
+          },
         }
       );
-      
-      console.log('SMS Response:', response.data);
+
+      console.log("SMS Response:", response.data);
       return response.data;
     } catch (error) {
-      console.error('SMS Error:', error.response?.data || error.message);
+      console.error("SMS Error:", error.response?.data || error.message);
       throw error;
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted with phone:', phoneNumber);
-    
-    setError('');
+    console.log("Form submitted with phone:", phoneNumber);
+
+    setError("");
     setIsLoading(true);
 
     if (!phoneNumber) {
-      setError('Phone number is required');
+      setError("Phone number is required");
       setIsLoading(false);
       return;
     }
 
     if (!validatePhoneNumber(phoneNumber)) {
-      setError('Please enter a valid phone number (e.g., +12345678901)');
+      setError("Please enter a valid phone number (e.g., +12345678901)");
       setIsLoading(false);
       return;
     }
@@ -71,18 +78,21 @@ export const SMSNotifications: React.FC<SMSNotificationsProps> = ({ onClose }) =
     try {
       const welcomeResponse = await sendSMS(
         phoneNumber,
-        'Welcome to Field Forecast! You will now receive weather alerts for your crops.'
+        "Welcome to Field Forecast! You will now receive weather alerts for your crops."
       );
 
-      console.log('Welcome message sent:', welcomeResponse);
+      console.log("Welcome message sent:", welcomeResponse);
       setIsSubmitted(true);
-      setNotifications(prev => ['Successfully subscribed to weather alerts!', ...prev]);
+      setNotifications((prev) => [
+        "Successfully subscribed to weather alerts!",
+        ...prev,
+      ]);
 
       // Only set up interval if initial message succeeds
       const weatherAlerts = [
-        'Weather Alert: Temperature rising to 35°C tomorrow',
-        'Rain expected in your area within 2 hours',
-        'Soil moisture levels dropping below optimal range'
+        "Weather Alert: Temperature rising to 35°C tomorrow",
+        "Rain expected in your area within 2 hours",
+        "Soil moisture levels dropping below optimal range",
       ];
 
       let alertIndex = 0;
@@ -90,10 +100,10 @@ export const SMSNotifications: React.FC<SMSNotificationsProps> = ({ onClose }) =
         if (alertIndex < weatherAlerts.length) {
           try {
             await sendSMS(phoneNumber, weatherAlerts[alertIndex]);
-            setNotifications(prev => [weatherAlerts[alertIndex], ...prev]);
+            setNotifications((prev) => [weatherAlerts[alertIndex], ...prev]);
             alertIndex++;
           } catch (error) {
-            setError('Failed to send scheduled alert');
+            setError("Failed to send scheduled alert");
             clearInterval(interval);
           }
         } else {
@@ -102,9 +112,11 @@ export const SMSNotifications: React.FC<SMSNotificationsProps> = ({ onClose }) =
       }, 60000);
 
       setTimeout(() => clearInterval(interval), 300000);
-
     } catch (error) {
-      setError(error.response?.data?.message || 'Failed to send SMS. Check your Twilio credentials and phone number.');
+      setError(
+        error.response?.data?.message ||
+          "Failed to send SMS. Check your Twilio credentials and phone number."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -131,11 +143,17 @@ export const SMSNotifications: React.FC<SMSNotificationsProps> = ({ onClose }) =
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="phone"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Phone Number
                 </label>
                 <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                  <Phone
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    size={18}
+                  />
                   <input
                     type="tel"
                     id="phone"
@@ -143,7 +161,7 @@ export const SMSNotifications: React.FC<SMSNotificationsProps> = ({ onClose }) =
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     className={`w-full pl-10 pr-4 py-2 border ${
-                      error ? 'border-red-300' : 'border-gray-300'
+                      error ? "border-red-300" : "border-gray-300"
                     } rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent`}
                     disabled={isLoading}
                   />
@@ -161,12 +179,14 @@ export const SMSNotifications: React.FC<SMSNotificationsProps> = ({ onClose }) =
                 disabled={isLoading}
                 className={`w-full py-2 rounded-lg flex items-center justify-center space-x-2 transition-colors ${
                   isLoading
-                    ? 'bg-green-400 cursor-not-allowed'
-                    : 'bg-green-600 hover:bg-green-700'
+                    ? "bg-green-400 cursor-not-allowed"
+                    : "bg-green-600 hover:bg-green-700"
                 } text-white`}
               >
                 <Bell size={18} />
-                <span>{isLoading ? 'Subscribing...' : 'Subscribe to SMS Updates'}</span>
+                <span>
+                  {isLoading ? "Subscribing..." : "Subscribe to SMS Updates"}
+                </span>
               </button>
             </form>
           </>

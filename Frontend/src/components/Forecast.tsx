@@ -39,10 +39,13 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import dotenv from "dotenv";
 
-const WEATHER_API_KEY = "83afdd5eca9636a679704d3843b1b797";
-const AGRO_API_KEY = "ec5db0a232db12f0ec4226a686c40d7d";
-const WEATHERBIT_API_KEY = "4b56ca498dfc47bab576883986c9e346";
+dotenv.config();
+
+const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
+const AGRO_API_KEY = process.env.AGRO_API_KEY;
+const WEATHERBIT_API_KEY = process.env.WEATHERBIT_API_KEY;
 
 // Function to get location from IP
 async function getLocationFromIP() {
