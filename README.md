@@ -32,6 +32,8 @@ BLUEMIND offers a rich set of features to assist farmers, particularly in water 
 
 - **Recommender System**: Based on conversational data stored in a database, it recommends modern water conservation techniques over traditional ones, highlighting efficiency improvements.
 
+- **Floating Chat Visual Assistant**: A draggable, easily adaptable chat tool with multilingual support (Hindi, English, and more), image capture (webcam/screen), and AI-driven voice responses to assist farmers visually and verbally
+
 - **Irrigation Planner**: Provides detailed plans for crop growth, efficient water conservation techniques, and scheduling, considering factors like location, crop type, growth stage, and weather forecasts.
 
 - **Weather and Soil Health Analysis**: Offers real-time data on weather and soil health based on location and time.

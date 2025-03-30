@@ -4,6 +4,7 @@ import BlueMindLoader from './components/BlueMindLoader';
 import { Login } from './components/Login';
 import Register from './components/Register';
 import PrivateRoute from './components/PrivateRoute'; // Import the new component
+import FloatingChat from './components/FloatingChat';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -37,6 +38,7 @@ function App() {
           <Route path="/*" element={<PrivateRoute />} /> {/* Replace MainApp with PrivateRoute */}
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
+        <FloatingChat/>
       </div>
     </Router>
   );
