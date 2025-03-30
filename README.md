@@ -121,6 +121,7 @@ To set up the BLUEMIND project for development or deployment, follow these steps
     CLOUDINARY_CLOUD_NAME=your-cloudinary-cloud-name
     CLOUDINARY_API_KEY=your-cloudinary-api-key
     CLOUDINARY_API_SECRET=your-cloudinary-api-secret
+    GEMINI_API_KEY=your-gemini-api-key
 
    ```
 
