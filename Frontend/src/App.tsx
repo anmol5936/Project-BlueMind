@@ -22,7 +22,7 @@ function App() {
 
   if (isLoading) {
     return (
-      <div className={`transition-opacity duration-500 ${isExiting ? 'animate-fade-out' : ''}`}>
+      <div className={`transition-opacity duration-800 ${isExiting ? 'animate-fade-out' : ''}`}>
         <BlueMindLoader />
       </div>
     );
